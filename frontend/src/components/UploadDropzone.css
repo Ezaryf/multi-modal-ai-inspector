@@ -1,0 +1,114 @@
+.upload-dropzone-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.dropzone {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-2xl);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    background: var(--bg-secondary);
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropzone:hover {
+    border-color: var(--color-primary);
+    background: var(--bg-tertiary);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-glow);
+}
+
+.dropzone.dragging {
+    border-color: var(--color-primary);
+    background: var(--bg-tertiary);
+    box-shadow: var(--shadow-glow);
+    transform: scale(1.02);
+}
+
+.dropzone.uploading {
+    cursor: not-allowed;
+    border-color: var(--color-primary);
+}
+
+.upload-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--color-primary);
+    margin-bottom: var(--spacing-lg);
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.upload-prompt h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-sm);
+}
+
+.upload-description {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-lg);
+}
+
+.upload-hint {
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+}
+
+.upload-status {
+    width: 100%;
+    max-width: 400px;
+}
+
+.upload-text {
+    color: var(--text-primary);
+    font-size: var(--font-size-lg);
+    margin-top: var(--spacing-lg);
+    font-weight: 500;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-primary);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: var(--spacing-md);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    transition: width var(--transition-fast);
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .dropzone {
+        padding: var(--spacing-xl);
+        min-height: 250px;
+    }
+
+    .upload-icon {
+        width: 48px;
+        height: 48px;
+    }
+}

@@ -1,0 +1,53 @@
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+.env.local
+
+# Storage
+storage/
+temp_*/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Models cache
+models/
+.cache/
+
+# Python
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+.cache/
+
+# Build
+frontend/dist/
