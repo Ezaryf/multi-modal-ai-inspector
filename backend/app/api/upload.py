@@ -79,12 +79,13 @@ async def upload_file(
         # Start background processing
         if background_tasks:
             background_tasks.add_task(
-                start_processing,
+                run_async_processing,
                 db=db,
                 media_id=media_id,
                 file_path=final_path,
                 storage_dir=STORAGE_PATH
             )
+        
         
         return {
             "media_id": media_id,
@@ -104,3 +105,17 @@ async def upload_file(
         if os.path.exists(temp_path):
             os.remove(temp_path)
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
+# Helper function for async processing
+import asyncio
+
+def run_async_processing(db, media_id, file_path, storage_dir):
+    """Wrapper to run async processing in background task"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(
+            start_processing(db, media_id, file_path, storage_dir)
+        )
+    finally:
+        loop.close()

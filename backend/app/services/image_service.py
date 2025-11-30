@@ -33,10 +33,10 @@ def get_clip_models():
         _clip_model = CLIPModel.from_pretrained(model_name)
     return _clip_processor, _clip_model
 
-def analyze_image(image_path: str) -> Dict:
+def analyze_image(image_path: str, detect_objects: bool = True) -> Dict:
     """
-    Analyze image using BLIP for captioning
-    Returns: dict with caption, colors, dimensions
+    Analyze image using BLIP for captioning and optionally detect objects
+    Returns: dict with caption, colors, dimensions, and objects
     """
     # Load image
     image = Image.open(image_path).convert("RGB")
@@ -54,13 +54,25 @@ def analyze_image(image_path: str) -> Dict:
     # Extract dominant colors (simple version)
     colors = extract_dominant_colors(image)
     
-    return {
+    result = {
         "caption": caption,
         "width": width,
         "height": height,
         "colors": colors,
         "aspect_ratio": round(width / height, 2)
     }
+    
+    # Add object detection if enabled
+    if detect_objects:
+        try:
+            from app.services.object_detection_service import detect_objects as yolo_detect
+            detection_result = yolo_detect(image_path)
+            result["object_detection"] = detection_result
+        except Exception as e:
+            print(f"Object detection failed: {e}")
+            result["object_detection"] = {"error": str(e)}
+    
+    return result
 
 def extract_dominant_colors(image: Image.Image, num_colors: int = 5) -> List[str]:
     """Extract dominant colors from image (simple palette extraction)"""

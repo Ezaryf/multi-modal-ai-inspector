@@ -5,7 +5,7 @@ Multi-Modal AI Inspector Backend
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.utils.database import init_db
-from app.api import upload, ask, media
+from app.api import upload, ask, media, export, websocket, batch
 import os
 from dotenv import load_dotenv
 
@@ -19,7 +19,7 @@ init_db()
 app = FastAPI(
     title="Multi-Modal AI Inspector",
     description="Hybrid conversational AI analyst for images, audio, and video",
-    version="1.0.0"
+    version="2.0.0"
 )
 
 # CORS middleware
@@ -36,6 +36,9 @@ app.add_middleware(
 app.include_router(upload.router, tags=["Upload"])
 app.include_router(ask.router, tags=["Chat"])
 app.include_router(media.router, tags=["Media"])
+app.include_router(export.router, tags=["Export"])
+app.include_router(websocket.router, tags=["WebSocket"])
+app.include_router(batch.router, tags=["Batch"])
 
 @app.get("/")
 async def root():
