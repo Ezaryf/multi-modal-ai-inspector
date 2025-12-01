@@ -40,6 +40,19 @@ app.include_router(export.router, tags=["Export"])
 app.include_router(websocket.router, tags=["WebSocket"])
 app.include_router(batch.router, tags=["Batch"])
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    print(f"GLOBAL ERROR: {str(exc)}")
+    import traceback
+    traceback.print_exc()
+    return JSONResponse(
+        status_code=500,
+        content={"message": f"Internal Server Error: {str(exc)}"},
+    )
+
 @app.get("/")
 async def root():
     """Health check endpoint"""

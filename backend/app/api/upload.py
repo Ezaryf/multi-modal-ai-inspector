@@ -36,12 +36,18 @@ async def upload_file(
     
     try:
         # Save uploaded file
+        print(f"DEBUG: Saving file {file.filename} to {temp_path}")
         with open(temp_path, "wb") as buffer:
             content = await file.read()
             buffer.write(content)
         
+        file_size_bytes = os.path.getsize(temp_path)
+        print(f"DEBUG: File saved. Size: {file_size_bytes} bytes")
+
         # Validate file
+        print("DEBUG: Starting validation...")
         media_type, file_size = validate_file(temp_path)
+        print(f"DEBUG: Validation successful. Type: {media_type}")
         
         # Move to permanent location
         file_extension = os.path.splitext(file.filename)[1]
@@ -61,6 +67,9 @@ async def upload_file(
             duration = get_audio_duration(final_path)
         elif media_type == "video":
             duration, width, height = extract_video_metadata(final_path)
+        elif media_type == "text":
+            # Text files don't have duration/dimensions
+            pass
         
         # Create media record
         media = Media(
@@ -80,7 +89,6 @@ async def upload_file(
         if background_tasks:
             background_tasks.add_task(
                 run_async_processing,
-                db=db,
                 media_id=media_id,
                 file_path=final_path,
                 storage_dir=STORAGE_PATH
@@ -108,14 +116,21 @@ async def upload_file(
 
 # Helper function for async processing
 import asyncio
+from app.utils.database import SessionLocal
 
-def run_async_processing(db, media_id, file_path, storage_dir):
+def run_async_processing(media_id, file_path, storage_dir):
     """Wrapper to run async processing in background task"""
+    # Create new session for background task
+    db = SessionLocal()
+    
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(
             start_processing(db, media_id, file_path, storage_dir)
         )
+    except Exception as e:
+        print(f"Background processing failed: {e}")
     finally:
+        db.close()
         loop.close()

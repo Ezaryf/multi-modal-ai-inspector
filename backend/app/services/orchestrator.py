@@ -4,6 +4,7 @@ Orchestrator service - coordinates all analysis pipelines
 from app.services.image_service import analyze_image
 from app.services.audio_service import analyze_audio
 from app.services.video_service import analyze_video
+from app.services.text_service import analyze_text
 from app.services.llm_service import summarize_analysis
 from app.utils.file_validation import detect_media_type
 from app.models.db import Media, Analysis, TranscriptSegment, Report
@@ -58,6 +59,13 @@ async def start_processing(db: Session, media_id: str, file_path: str, storage_d
             if "audio" in result and "segments" in result["audio"]:
                 save_transcript_segments(db, media_id, result["audio"]["segments"])
             await manager.send_progress_update(media_id, "video", 70, "Analyzing frames...")
+        elif media_type == "text":
+            print(f"DEBUG: Processing text file {file_path}")
+            await manager.send_progress_update(media_id, "text", 20, "Reading text content...")
+            result = analyze_text(file_path)
+            print(f"DEBUG: Text analysis result: {result}")
+            stage = "text"
+            await manager.send_progress_update(media_id, "text", 80, "Text processed")
         else:
             raise ValueError(f"Unknown media type: {media_type}")
         

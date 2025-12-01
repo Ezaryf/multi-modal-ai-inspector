@@ -13,7 +13,8 @@ export const api = {
 
         const response = await axios.post(`${API_BASE_URL}/upload`, formData, {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                // Let browser set Content-Type with boundary
+                // 'Content-Type': 'multipart/form-data',
             },
             onUploadProgress: (progressEvent) => {
                 const percentCompleted = Math.round(
