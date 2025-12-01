@@ -68,6 +68,12 @@ def ask_llm(context: Dict, question: str, chat_history: List[Dict] = None) -> st
         # Remove the prompt part
         response = generated[len(prompt):].strip()
         
+        # Stop at the next USER: or ASSISTANT: token to prevent hallucination
+        stop_tokens = ["USER:", "ASSISTANT:", "User:", "Assistant:"]
+        for token in stop_tokens:
+            if token in response:
+                response = response.split(token)[0].strip()
+        
         return response
     except Exception as e:
         print(f"LLM generation failed: {e}")
