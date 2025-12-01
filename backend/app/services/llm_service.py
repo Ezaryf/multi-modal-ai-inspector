@@ -22,18 +22,14 @@ def get_llm_pipeline():
             model=model_name,
             tokenizer=model_name,
             device=-1,  # CPU
-            max_length=512
+            max_length=1024
         )
     return _llm_pipeline
 
-SYSTEM_PROMPT = """You are "Inspector": an AI analyst assistant. 
-When answering questions about media:
-1. First provide a 3-bullet structured summary (facts only)
-2. Then give one creative paragraph reading of the media
-3. Provide explicit source pointers (transcript timestamps, frame indexes)
-4. If unsure, say "I might be mistaken" and point to the source
-
-Keep responses concise and factual."""
+SYSTEM_PROMPT = """You are a helpful AI assistant analyzing media content.
+Answer the user's question based ONLY on the provided context.
+If the answer is not in the context, say "I don't see that in the media."
+Keep your answer concise and direct."""
 
 def ask_llm(context: Dict, question: str, chat_history: List[Dict] = None) -> str:
     """
@@ -56,8 +52,8 @@ def ask_llm(context: Dict, question: str, chat_history: List[Dict] = None) -> st
         result = llm(
             prompt,
             max_new_tokens=300,
-            temperature=0.7,
-            top_p=0.9,
+            temperature=0.5,
+            top_p=0.85,
             do_sample=True,
             num_return_sequences=1
         )
